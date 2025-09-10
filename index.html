@@ -2,291 +2,359 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>My Game Launcher</title>
+    <title>Game Launcher</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
         :root {
-            --bg-primary: #1e1e2f;
-            --bg-secondary: #2a2a40;
-            --text-primary: #dcdce0;
-            --text-secondary: #cdd6f4;
-            --accent-color: #89b4fa;
-            --success-color: #a6e3a1;
-            --error-color: #f38ba8;
-            --disabled-color: #4a4a68;
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b3b3b3;
+            --accent-color: #ff4500;
+            --success-color: #2ecc71;
         }
 
-        /* --- THAY ĐỔI LỚN VỀ BODY VÀ BỐ CỤC --- */
-        html {
-            box-sizing: border-box;
-        }
-        *, *:before, *:after {
-            box-sizing: inherit;
-        }
-        body {
+        /* --- CẤU TRÚC BODY VÀ BỐ CỤC CHÍNH --- */
+        html, body {
+            height: 100%;
+            margin: 0;
             font-family: 'Roboto', sans-serif;
             color: var(--text-primary);
-            margin: 0;
-            height: 100vh; /* Quan trọng để bố cục chiếm toàn bộ chiều cao */
-            overflow: hidden; /* Ngăn cuộn ở body */
-
-            /* Thêm hình nền */
-            background-image: linear-gradient(rgba(20, 20, 35, 0.7), rgba(20, 20, 35, 0.7)), url('https://img3.wallspic.com/previews/4/1/7/7/6/167714/167714-spider_man_senses-x750.jpg');
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-
-            /* Sử dụng Flexbox để đẩy thanh cài đặt xuống dưới */
+            overflow: hidden;
+        }
+        body {
+            background-color: var(--bg-primary);
             display: flex;
             flex-direction: column;
         }
-
-        .container {
-            padding: 20px 40px;
-            /* Cho phép container co giãn để lấp đầy không gian */
+        .main-layout {
+            display: grid;
+            /* THAY ĐỔI: Giảm chiều rộng sidebar phải */
+            grid-template-columns: 350px 1fr 80px;
+            height: 100%;
             flex-grow: 1;
-            /* Thêm thanh cuộn nếu danh sách game quá dài */
+        }
+
+        /* --- SIDEBAR BÊN TRÁI (PATCH NOTES) --- */
+        .left-sidebar {
+            background-color: var(--bg-secondary);
+            padding: 25px;
             overflow-y: auto;
+            border-right: 1px solid #333;
+        }
+        .left-sidebar h2 { margin-top: 0; color: var(--text-primary); border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; }
+        .patch-note { margin-bottom: 25px; }
+        .patch-note h3 { margin: 0 0 10px 0; color: var(--accent-color); }
+        .patch-note ul { margin: 0; padding-left: 20px; list-style: none; }
+        .patch-note li { margin-bottom: 8px; color: var(--text-secondary); line-height: 1.5; }
+        .patch-note li::before { content: "»"; color: var(--accent-color); margin-right: 10px; }
+
+
+        /* --- NỘI DUNG CHÍNH (TRUNG TÂM) --- */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(18,18,18,0.95) 20%, rgba(18,18,18,0));
+        }
+        .game-title {
+            position: relative;
+            z-index: 2;
+        }
+        .game-title h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(0,0,0,0.7);
         }
 
-        h1 {
-            color: var(--accent-color);
-            text-align: center;
-            font-size: 2.5rem;
-            text-shadow: 0 0 10px rgba(137, 180, 250, 0.5);
+        /* --- SIDEBAR BÊN PHẢI (MẠNG XÃ HỘI) --- */
+        .right-sidebar {
+            background-color: var(--bg-secondary);
+            padding: 25px 0; /* Giảm padding ngang */
+            border-left: 1px solid #333;
+            display: flex; /* THAY ĐỔI: Dùng flexbox để căn giữa */
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .right-sidebar h2 {
+            display: none; /* Ẩn chữ "Cộng Đồng" đi vì không còn đủ chỗ */
+        }
+        #social-links-container a {
+            display: flex;
+            justify-content: center; /* THAY ĐỔI: Căn giữa icon */
+            align-items: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            width: 40px; /* Kích thước nút */
+            height: 40px;
+            border-radius: 50%; /* Bo tròn */
+            transition: background-color 0.2s, color 0.2s;
+        }
+        #social-links-container a:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        #social-links-container i {
+            font-size: 1.5rem; /* Icon to hơn một chút */
         }
 
-        /* --- THANH CÀI ĐẶT ĐƯỢC DI CHUYỂN XUỐNG DƯỚI --- */
-        .settings {
+        /* --- THANH DƯỚI CÙNG (SETTINGS & ACTION) --- */
+        .bottom-bar {
             padding: 15px 40px;
             display: flex;
             align-items: center;
-            gap: 15px;
-
-            /* Tạo hiệu ứng mờ kính (glassmorphism) */
-            background-color: rgba(30, 30, 47, 0.6); /* --bg-primary với độ trong suốt */
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-
-            /* Ngăn không cho thanh này bị co lại */
+            justify-content: space-between; /* Đẩy 2 khối ra 2 bên */
+            gap: 20px;
+            background-color: var(--bg-primary);
+            border-top: 1px solid #333;
             flex-shrink: 0;
         }
 
+        /* THAY ĐỔI: Bọc input và nút chọn folder vào một khối */
+        .path-selector {
+            display: flex;
+            flex-grow: 1; /* Cho phép khối này chiếm hết không gian còn lại */
+            position: relative;
+        }
         #install-path {
             flex-grow: 1;
             padding: 10px;
+            padding-right: 50px; /* Thêm khoảng trống cho nút browse */
             border-radius: 5px;
-            border: 1px solid var(--disabled-color);
-            background-color: var(--bg-primary);
+            border: 1px solid #444;
+            background-color: var(--bg-tertiary);
             color: var(--text-secondary);
         }
+        #select-path-btn {
+            position: absolute; /* Đặt nút browse đè lên trên input */
+            right: 1px;
+            top: 1px;
+            bottom: 1px;
+            width: 45px;
+            border: none;
+            background-color: #444;
+            color: white;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #select-path-btn:hover {
+            background-color: #555;
+        }
 
-        .btn {
-            padding: 10px 20px;
+        /* THAY ĐỔI: Định dạng lại nút hành động chính */
+        .action-container {
+            width: 250px; /* Set chiều rộng cố định */
+            flex-shrink: 0;
+        }
+        .action-btn {
+            width: 100%;
+            padding: 15px 0; /* Giảm chiều cao một chút */
+            font-size: 1.2rem;
+            font-weight: 700;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-weight: 700;
-            transition: background-color 0.2s;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
         }
-        .btn-secondary { background-color: #5a5a82; color: white; }
-        .btn-secondary:hover { background-color: #6a6aa2; }
-
-        #game-list {
-            display: grid;
-            gap: 15px;
-            padding-bottom: 20px; /* Thêm khoảng đệm ở cuối danh sách */
-        }
-        .game-card {
-            background-color: rgba(42, 42, 64, 0.8); /* --bg-secondary với độ trong suốt */
-            padding: 20px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .game-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-
-        .game-info h2 { margin: 0 0 5px 0; color: var(--text-secondary); }
-        .game-info span { font-size: 0.9em; color: var(--disabled-color); }
-        .game-actions { text-align: right; min-width: 200px; }
-        .action-btn { width: 120px; }
-        .btn-install { background-color: var(--accent-color); color: var(--bg-primary); }
-        .btn-install:hover { background-color: #a9c4fa; }
-        .btn-play { background-color: var(--success-color); color: var(--bg-primary); }
-        .btn-play:hover { background-color: #b6e8b4; }
-        .btn-update { background-color: #f9e2af; color: var(--bg-primary); }
-        .btn-update:hover { background-color: #fae8c0; }
-        .btn:disabled { background-color: var(--disabled-color); cursor: not-allowed; color: #888; }
-        .progress-container { margin-top: 10px; display: none; }
-        .progress-bar {
-            width: 100%;
-            background-color: var(--bg-primary);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        .progress-bar-inner {
-            height: 10px;
-            width: 0%;
-            background-color: var(--accent-color);
-            transition: width 0.1s linear;
-        }
-        .status-text { font-size: 0.8em; margin-top: 5px; color: var(--text-secondary); }
+        .btn-install, .btn-update { background-color: var(--accent-color); color: white; }
+        .btn-install:hover, .btn-update:hover { filter: brightness(1.1); }
+        .btn-play { background-color: var(--success-color); color: white; }
+        .btn-play:hover { filter: brightness(1.1); }
+        .btn:disabled { background-color: #555; cursor: not-allowed; color: #999; }
+        .progress-container { margin-top: 5px; display: none; }
+        .progress-bar { width: 100%; background-color: var(--bg-tertiary); border-radius: 5px; overflow: hidden;}
+        .progress-bar-inner { height: 10px; width: 0%; background-color: var(--accent-color); transition: width 0.1s linear;}
+        .status-text { font-size: 0.9em; margin-top: 5px; color: var(--text-secondary); text-align: center;}
     </style>
 </head>
 <body>
-<!-- Container cho nội dung chính (tiêu đề và danh sách game) -->
-<div class="container">
-    <h1>Game Launcher</h1>
-    <div id="game-list">
-        <!-- Game cards will be inserted here by JavaScript -->
+<div class="main-layout">
+    <aside class="left-sidebar">
+        <h2>Thông Báo Cập Nhật</h2>
+        <div id="patch-notes-content"></div>
+    </aside>
+
+    <main class="main-content" id="main-content">
+        <div class="game-title">
+            <h1 id="game-title-text">Đang tải...</h1>
+        </div>
+        <!-- NÚT HÀNH ĐỘNG ĐÃ ĐƯỢC CHUYỂN XUỐNG DƯỚI -->
+    </main>
+
+    <aside class="right-sidebar">
+        <h2>Cộng Đồng</h2>
+        <div id="social-links-container"></div>
+    </aside>
+</div>
+
+<!-- THAY ĐỔI: Đổi tên class và cấu trúc bên trong -->
+<div class="bottom-bar">
+    <div class="path-selector">
+        <input type="text" id="install-path" placeholder="Chưa chọn thư mục cài đặt game..." readonly>
+        <button id="select-path-btn" title="Chọn thư mục cài đặt">
+            <i class="fa-solid fa-folder-open"></i>
+        </button>
+    </div>
+    <div class="action-container" id="action-container">
+        <button id="action-btn" class="action-btn" disabled>Chờ...</button>
+        <div class="progress-container">
+            <div class="progress-bar"><div id="progress-bar-inner" class="progress-bar-inner"></div></div>
+            <div id="status-text" class="status-text"></div>
+        </div>
     </div>
 </div>
 
-<!-- Thanh cài đặt được chuyển ra ngoài và đặt ở cuối cùng -->
-<div class="settings">
-    <input type="text" id="install-path" placeholder="Chưa chọn thư mục cài đặt game..." readonly>
-    <button id="select-path-btn" class="btn btn-secondary">Chọn Thư Mục</button>
-</div>
-
-<!-- Script giữ nguyên -->
 <script>
-    // ... (TOÀN BỘ PHẦN JAVASCRIPT GIỮ NGUYÊN, KHÔNG THAY ĐỔI)
     document.addEventListener('DOMContentLoaded', async () => {
+        // Phần khai báo biến DOM vẫn hoạt động vì ID không đổi
         const installPathInput = document.getElementById('install-path');
         const selectPathBtn = document.getElementById('select-path-btn');
-        const gameListDiv = document.getElementById('game-list');
+        const mainContent = document.getElementById('main-content');
+        const gameTitleText = document.getElementById('game-title-text');
+        const patchNotesContent = document.getElementById('patch-notes-content');
+        const socialLinksContainer = document.getElementById('social-links-container');
+        const actionBtn = document.getElementById('action-btn');
+        const actionContainer = document.getElementById('action-container');
+        const progressContainer = actionContainer.querySelector('.progress-container');
+        const progressBarInner = document.getElementById('progress-bar-inner');
+        const statusText = document.getElementById('status-text');
 
-        let installPath = await window.electronAPI.getStoreValue('installPath');
-        if (installPath) {
-            installPathInput.value = installPath;
+        let installPath;
+        let gameData;
+
+        function updateActionButton(status, gameVersion) {
+            // ... (Hàm này không thay đổi)
+            if (status.status === 'installed') {
+                if (status.version < gameVersion) {
+                    actionBtn.textContent = 'Cập Nhật';
+                    actionBtn.className = 'action-btn btn-update';
+                    actionBtn.dataset.action = 'update';
+                } else {
+                    actionBtn.textContent = 'Chơi';
+                    actionBtn.className = 'action-btn btn-play';
+                    actionBtn.dataset.action = 'play';
+                }
+            } else {
+                actionBtn.textContent = 'Cài Đặt';
+                actionBtn.className = 'action-btn btn-install';
+                actionBtn.dataset.action = 'install';
+            }
+            actionBtn.disabled = false;
         }
 
+        async function loadGameData() {
+            // ... (Hàm này gần như không đổi, chỉ có phần social links thay đổi)
+            if (!installPath) {
+                actionBtn.textContent = 'Chọn thư mục';
+                actionBtn.disabled = true; // Disable nút khi chưa có đường dẫn
+                return;
+            }
+            actionBtn.disabled = true;
+
+            const games = await window.electronAPI.fetchGameConfig();
+            if (!games || games.length === 0) {
+                gameTitleText.textContent = "Lỗi";
+                actionBtn.textContent = 'Không tìm thấy game';
+                return;
+            }
+
+            gameData = games[0];
+
+            gameTitleText.textContent = gameData.name;
+            mainContent.style.backgroundImage = `url('${gameData.backgroundUrl}')`;
+
+            patchNotesContent.innerHTML = gameData.patchNotes.map(pn => `
+                    <div class="patch-note">
+                        <h3>${pn.version} - ${pn.title}</h3>
+                        <ul>${pn.notes.map(note => `<li>${note}</li>`).join('')}</ul>
+                    </div>
+                `).join('');
+
+            // THAY ĐỔI: Chỉ render icon và thêm title để hiện tooltip
+            const socialIcons = {
+                homepage: 'fa-solid fa-globe', facebook: 'fa-brands fa-facebook',
+                discord: 'fa-brands fa-discord', youtube: 'fa-brands fa-youtube',
+                twitter: 'fa-brands fa-twitter'
+            };
+            socialLinksContainer.innerHTML = Object.entries(gameData.socials).map(([key, url]) => `
+                    <a href="${url}" target="_blank" title="${key.charAt(0).toUpperCase() + key.slice(1)}">
+                        <i class="${socialIcons[key] || 'fa-solid fa-link'}"></i>
+                    </a>
+                `).join('');
+
+            const status = await window.electronAPI.checkGameStatus(gameData.id);
+            updateActionButton(status, gameData.version);
+        }
+
+        // Các event listener và hàm khởi tạo còn lại giữ nguyên
         selectPathBtn.addEventListener('click', async () => {
             const selectedPath = await window.electronAPI.selectDirectory();
             if (selectedPath) {
                 installPath = selectedPath;
                 installPathInput.value = installPath;
                 window.electronAPI.setStoreValue('installPath', installPath);
-                loadGames(); // Tải lại game list để cập nhật trạng thái
+                loadGameData();
             }
         });
 
-        async function loadGames() {
-            if (!installPath) {
-                gameListDiv.innerHTML = '<p style="text-align: center;">Vui lòng chọn thư mục cài đặt để xem danh sách game.</p>';
-                return;
-            }
-            gameListDiv.innerHTML = '<p style="text-align: center;">Đang tải danh sách game...</p>';
-            const games = await window.electronAPI.fetchGameConfig();
-            if (!games || games.length === 0) {
-                gameListDiv.innerHTML = '<p style="text-align: center;">Không thể tải danh sách game hoặc không có game nào.</p>';
-                return;
-            }
+        actionBtn.addEventListener('click', async () => {
+            const action = actionBtn.dataset.action;
+            if (!action || !gameData) return;
 
-            gameListDiv.innerHTML = ''; // Xóa thông báo loading
-
-            for (const game of games) {
-                const status = await window.electronAPI.checkGameStatus(game.id);
-                const gameCard = document.createElement('div');
-                gameCard.className = 'game-card';
-                gameCard.id = `game-${game.id}`;
-
-                let buttonHtml = `<button class="btn btn-install action-btn" data-game-id="${game.id}">Cài Đặt</button>`;
-                let versionText = `Phiên bản mới nhất: ${game.version}`;
-
+            if (action === 'install' || action === 'update') {
+                selectPathBtn.disabled = true;
+                actionBtn.style.display = 'none';
+                progressContainer.style.display = 'block';
+                statusText.textContent = 'Đang chuẩn bị...';
+                window.electronAPI.installGame({ game: gameData, installPath });
+            } else if (action === 'play') {
+                const status = await window.electronAPI.checkGameStatus(gameData.id);
                 if (status.status === 'installed') {
-                    if (status.version < game.version) {
-                        buttonHtml = `<button class="btn btn-update action-btn" data-game-id="${game.id}">Cập Nhật</button>`;
-                        versionText = `Đã cài: ${status.version} | Mới nhất: ${game.version}`;
-                    } else {
-                        buttonHtml = `<button class="btn btn-play action-btn" data-game-id="${game.id}">Chơi</button>`;
-                        versionText = `Đã cài đặt phiên bản ${status.version}`;
-                    }
+                    window.electronAPI.launchGame({ gamePath: status.path, executable: gameData.executable });
                 }
-
-                gameCard.innerHTML = `
-                        <div class="game-info">
-                            <h2>${game.name}</h2>
-                            <span>${versionText}</span>
-                        </div>
-                        <div class="game-actions" id="actions-${game.id}">
-                            ${buttonHtml}
-                            <div class="progress-container">
-                                <div class="progress-bar"><div class="progress-bar-inner"></div></div>
-                                <div class="status-text"></div>
-                            </div>
-                        </div>
-                    `;
-                gameListDiv.appendChild(gameCard);
-            }
-        }
-
-        gameListDiv.addEventListener('click', (event) => {
-            if (event.target.tagName !== 'BUTTON') return;
-
-            const button = event.target;
-            const gameId = button.dataset.gameId;
-
-            if (button.classList.contains('btn-install') || button.classList.contains('btn-update')) {
-                handleInstall(gameId, button);
-            } else if (button.classList.contains('btn-play')) {
-                handlePlay(gameId);
             }
         });
 
-        async function handleInstall(gameId) {
-            const games = await window.electronAPI.fetchGameConfig();
-            const game = games.find(g => g.id === gameId);
-
-            document.querySelectorAll('.action-btn').forEach(b => b.disabled = true);
-
-            const actionsDiv = document.getElementById(`actions-${gameId}`);
-            actionsDiv.querySelector('button').style.display = 'none';
-            const progressContainer = actionsDiv.querySelector('.progress-container');
-            progressContainer.style.display = 'block';
-            actionsDiv.querySelector('.status-text').textContent = 'Đang chuẩn bị tải...';
-
-            window.electronAPI.installGame({ game, installPath });
-        }
-
-        async function handlePlay(gameId) {
-            const games = await window.electronAPI.fetchGameConfig();
-            const game = games.find(g => g.id === gameId);
-            const status = await window.electronAPI.checkGameStatus(game.id);
-            if(status.status === 'installed') {
-                window.electronAPI.launchGame({ gamePath: status.path, executable: game.executable });
-            }
-        }
-
-        window.electronAPI.onDownloadProgress((_event, { gameId, progress }) => {
-            const actionsDiv = document.getElementById(`actions-${gameId}`);
-            actionsDiv.querySelector('.progress-bar-inner').style.width = `${progress}%`;
-            actionsDiv.querySelector('.status-text').textContent = `Đang tải... ${Math.round(progress)}%`;
+        window.electronAPI.onDownloadProgress((_event, { progress }) => {
+            progressBarInner.style.width = `${progress}%`;
+            statusText.textContent = `Đang tải... ${Math.round(progress)}%`;
         });
 
-        window.electronAPI.onInstallComplete((_event, { gameId, success, error }) => {
-            const actionsDiv = document.getElementById(`actions-${gameId}`);
-            const progressContainer = actionsDiv.querySelector('.progress-container');
+        window.electronAPI.onInstallComplete((_event, { success, error }) => {
+            selectPathBtn.disabled = false;
+            actionBtn.style.display = 'block';
             progressContainer.style.display = 'none';
-
-            document.querySelectorAll('.action-btn').forEach(b => b.disabled = false);
-
             if (success) {
-                loadGames();
+                loadGameData();
             } else {
-                actionsDiv.querySelector('button').style.display = 'block';
-                actionsDiv.querySelector('.status-text').textContent = `Lỗi: ${error}`;
-                actionsDiv.querySelector('.status-text').style.color = 'var(--error-color)';
+                statusText.textContent = `Lỗi: ${error}`;
             }
         });
 
-        loadGames();
+        await (async () => {
+            installPath = await window.electronAPI.getStoreValue('installPath');
+            if (installPath) {
+                installPathInput.value = installPath;
+            }
+            await loadGameData();
+        })();
     });
 </script>
 </body>

@@ -1,21 +1,36 @@
-[  {
-    "id": "my-first-game",
-    "name": "Trò chơi Phiêu Lưu (Local)",
-    "version": "1.1.0",
-    "downloadUrl": "https://link-den-file-zip-cua-game-v1.1.0.zip",
-    "executable": "game.exe"
-  },
+[
   {
-    "id": "another-cool-game",
-    "name": "Game Chiến Thuật Hay (Local)",
-    "version": "2.0.1",
-    "downloadUrl": "https://link-den-file-zip-cua-game-khac.zip",
-    "executable": "start_game.exe"
-  },
-  {
-    "id": "offline-test-game",
-    "name": "Game Thử Nghiệm Offline",
-    "version": "1.0.0",
-    "downloadUrl": "https://link-toi-file-zip-khong-ton-tai.zip",
-    "executable": "test.exe"
-  }]
+    "id": "your-main-game",
+    "name": "Tên Game Của Bạn",
+    "version": "1.2.0",
+    "downloadUrl": "https://link-den-file-zip-moi-nhat.zip",
+    "executable": "game.exe",
+    "backgroundUrl": "background-game.jpg",
+    "patchNotes": [
+      {
+        "version": "1.2.0",
+        "title": "Bản cập nhật Mùa Hè Rực Lửa",
+        "notes": [
+          "Thêm bản đồ mới: Bãi Biển Nhiệt Đới.",
+          "Ra mắt 2 nhân vật mới: Kẻ Lướt Sóng và Nữ Thần Biển Cả.",
+          "Cân bằng lại sức mạnh của trang bị X, Y, Z.",
+          "Sửa một số lỗi liên quan đến giao diện người dùng."
+        ]
+      },
+      {
+        "version": "1.1.5",
+        "title": "Bản vá lỗi nhỏ",
+        "notes": [
+          "Sửa lỗi khiến nhân vật bị kẹt ở địa hình.",
+          "Tối ưu hóa hiệu năng."
+        ]
+      }
+    ],
+    "socials": {
+      "homepage": "https://trang-chu-cua-game.com",
+      "facebook": "https://facebook.com/tengame",
+      "discord": "https://discord.gg/servergame",
+      "youtube": "https://youtube.com/c/kenhgame"
+    }
+  }
+]
