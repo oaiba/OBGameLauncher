@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs').promises; 
 const fetch = require('node-fetch');
 const extract = require('extract-zip');
 const Store = require('electron-store');
@@ -42,14 +42,29 @@ app.on('window-all-closed', () => {
 
 // === IPC Handlers ===
 
-// Lấy config game từ URL
+// // Lấy config game từ URL
+// ipcMain.handle('fetch-game-config', async () => {
+//     try {
+//         const response = await fetch(GAME_CONFIG_URL);
+//         if (!response.ok) throw new Error(`Failed to fetch config: ${response.statusText}`);
+//         return await response.json();
+//     } catch (error) {
+//         console.error('Error fetching game config:', error);
+//         return null;
+//     }
+// });
+
 ipcMain.handle('fetch-game-config', async () => {
     try {
-        const response = await fetch(GAME_CONFIG_URL);
-        if (!response.ok) throw new Error(`Failed to fetch config: ${response.statusText}`);
-        return await response.json();
+        // __dirname trỏ đến thư mục hiện tại của file main.js
+        const configPath = path.join(__dirname, 'games.json');
+        // Đọc file một cách bất đồng bộ
+        const fileContent = await fs.readFile(configPath, 'utf-8');
+        // Phân tích chuỗi JSON thành object JavaScript và trả về
+        return JSON.parse(fileContent);
     } catch (error) {
-        console.error('Error fetching game config:', error);
+        console.error('Error reading local game config file:', error);
+        // Trả về null nếu có lỗi (file không tồn tại, JSON không hợp lệ,...)
         return null;
     }
 });
@@ -68,24 +83,31 @@ ipcMain.handle('store:get', (event, key) => store.get(key));
 ipcMain.on('store:set', (event, key, value) => store.set(key, value));
 
 // Kiểm tra trạng thái của một game (đã cài đặt chưa, phiên bản nào)
-ipcMain.handle('game:check-status', (event, gameId) => {
+ipcMain.handle('game:check-status', async (event, gameId) => {
     const installPath = store.get('installPath');
-    if (!installPath) return { status: 'no_install_path' };
+    if (!installPath) {
+        return { status: 'no_install_path' };
+    }
 
     const gameDir = path.join(installPath, gameId);
     const metadataFile = path.join(gameDir, 'game-info.json');
 
-    if (fs.existsSync(metadataFile)) {
-        try {
-            const metadata = JSON.parse(fs.readFileSync(metadataFile));
-            return { status: 'installed', version: metadata.version, path: gameDir };
-        } catch (e) {
-            return { status: 'not_installed' }; // Metadata bị lỗi
-        }
-    }
-    return { status: 'not_installed' };
-});
+    try {
+        // Thử đọc file metadata. Nếu không thành công (file không tồn tại, không có quyền đọc),
+        // nó sẽ nhảy vào khối catch.
+        const metadataContent = await fs.readFile(metadataFile, 'utf-8');
 
+        // Nếu đọc thành công, parse JSON. Nếu JSON lỗi, nó cũng sẽ nhảy vào catch.
+        const metadata = JSON.parse(metadataContent);
+
+        // Nếu mọi thứ ổn, trả về trạng thái đã cài đặt.
+        return { status: 'installed', version: metadata.version, path: gameDir };
+    } catch (error) {
+        // Bất kỳ lỗi nào ở trên (file not found, json invalid, etc.) đều có nghĩa là game chưa được cài đặt đúng cách.
+        // console.error(`Could not check status for ${gameId}:`, error.message); // Bỏ comment để debug nếu cần
+        return { status: 'not_installed' };
+    }
+});
 
 // Tải và cài đặt game
 ipcMain.on('game:install', async (event, { game, installPath }) => {

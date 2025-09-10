@@ -1,16 +1,21 @@
-﻿[
-  {
+[  {
     "id": "my-first-game",
-    "name": "Trò chơi Phiêu Lưu",
+    "name": "Trò chơi Phiêu Lưu (Local)",
     "version": "1.1.0",
     "downloadUrl": "https://link-den-file-zip-cua-game-v1.1.0.zip",
     "executable": "game.exe"
   },
   {
     "id": "another-cool-game",
-    "name": "Game Chiến Thuật Hay",
+    "name": "Game Chiến Thuật Hay (Local)",
     "version": "2.0.1",
     "downloadUrl": "https://link-den-file-zip-cua-game-khac.zip",
     "executable": "start_game.exe"
-  }
-]
+  },
+  {
+    "id": "offline-test-game",
+    "name": "Game Thử Nghiệm Offline",
+    "version": "1.0.0",
+    "downloadUrl": "https://link-toi-file-zip-khong-ton-tai.zip",
+    "executable": "test.exe"
+  }]
