@@ -24,58 +24,67 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            display: flex;
-            flex-direction: column;
         }
         .main-layout {
             display: grid;
-            grid-template-columns: 350px 1fr 65px;
+            grid-template-columns: 1fr 65px;
             height: 100%;
-            flex-grow: 1;
-        }
-
-        /* --- SIDEBAR BÊN TRÁI --- */
-        .left-sidebar {
-            padding: 25px;
-            overflow-y: auto;
-            background-color: rgba(20, 20, 20, 0.5);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .left-sidebar h2 { margin-top: 0; color: var(--text-primary); border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; }
-        .patch-note { margin-bottom: 25px; }
-        .patch-note h3 { margin: 0 0 10px 0; color: var(--accent-color); font-size: 1.1rem; }
-        .patch-note ul { margin: 0; padding-left: 20px; list-style: none; }
-        .patch-note li { margin-bottom: 8px; color: var(--text-secondary); line-height: 1.5; font-size: 0.9rem; }
-        .patch-note li::before { content: "»"; color: var(--accent-color); margin-right: 10px; }
-
-        /* --- NỘI DUNG CHÍNH --- */
-        .main-content {
-            display: flex;
             position: relative;
         }
-        /* Lớp phủ giờ đây nằm trong main-content để không ảnh hưởng thanh dưới cùng */
-        .main-content::before {
-            content: '';
+
+        .patch-notes-box {
             position: absolute;
+            top: 25px;
+            left: 25px;
+            width: 320px;
+            max-height: 45%;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 20;
+            background-color: rgba(20, 20, 20, 0.55);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        /* --- THAY ĐỔI: Ẩn hoàn toàn thanh scrollbar --- */
+        .patch-notes-box::-webkit-scrollbar {
+            display: none; /* Dành cho Chrome, Safari, và Opera */
+        }
+        /* Đối với Firefox (cần 2 thuộc tính) */
+        .patch-notes-box {
+            scrollbar-width: none;
+        }
+
+        .patch-notes-box h2 {
+            margin-top: 0; padding-bottom: 10px; font-size: 1.1rem;
+            color: var(--text-primary); border-bottom: 2px solid var(--accent-color);
+        }
+        .patch-note { margin-bottom: 20px; }
+        .patch-note h3 { margin: 0 0 8px 0; color: var(--accent-color); font-size: 1rem; }
+        .patch-note ul { margin: 0; padding-left: 18px; list-style: none; }
+        .patch-note li {
+            margin-bottom: 6px; color: var(--text-secondary);
+            line-height: 1.4; font-size: 0.85rem;
+        }
+        .patch-note li::before { content: "»"; color: var(--accent-color); margin-right: 8px; }
+
+        .main-content { position: relative; }
+        .main-content::before {
+            content: ''; position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(to top, rgba(18,18,18,0.95) 5%, transparent 40%);
         }
 
-        /* --- SIDEBAR BÊN PHẢI --- */
         .right-sidebar {
             padding: 25px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
             background-color: rgba(20, 20, 20, 0.5);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-left: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .right-sidebar h2 { display: none; }
         #social-links-container a {
             display: flex; justify-content: center; align-items: center;
             color: var(--text-secondary); text-decoration: none;
@@ -88,59 +97,49 @@
         }
         #social-links-container i { font-size: 1.5rem; }
 
-        /* --- THANH DƯỚI CÙNG (SETTINGS & ACTION) --- */
         .bottom-bar {
             padding: 15px 40px;
             display: flex;
-            align-items: center;
-            justify-content: flex-end; /* THAY ĐỔI: Đẩy mọi thứ về bên phải */
+            align-items: flex-end;
             gap: 20px;
-            /* THAY ĐỔI: Nền trong suốt vì giờ nó nằm trên main-content */
-            background-color: transparent;
-            position: absolute; /* Đặt đè lên trên main-content */
-            bottom: 0;
-            left: 350px; /* Bằng chiều rộng sidebar trái */
-            right: 65px; /* Bằng chiều rộng sidebar phải */
+            position: absolute; bottom: 0; left: 0; right: 65px;
             z-index: 10;
         }
 
         .path-selector {
-            display: flex;
-            flex-grow: 1; /* Cho phép chiếm hết không gian còn lại bên trái */
-            position: relative;
-            align-items: center;
+            display: flex; flex-grow: 1; position: relative; align-items: center;
         }
         #install-path {
-            width: 100%;
-            padding: 12px 15px;
-            padding-right: 50px;
-            border-radius: 5px;
-            /* THAY ĐỔI: Nền trong suốt và viền tinh tế hơn */
-            background-color: transparent;
+            width: 100%; padding: 12px 15px; padding-right: 50px;
+            border-radius: 5px; background-color: transparent;
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: var(--text-primary);
-            backdrop-filter: blur(5px); /* Thêm một chút blur nhẹ cho ô input */
-            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
         }
-        #install-path::placeholder {
-            color: rgba(224, 224, 224, 0.5);
-        }
+        #install-path::placeholder { color: rgba(224, 224, 224, 0.5); }
         #select-path-btn {
             position: absolute; right: 1px; top: 1px; bottom: 1px;
-            width: 45px;
-            /* THAY ĐỔI: Nền và viền trong suốt */
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-            transition: color 0.2s;
+            width: 45px; background: transparent; border: none;
+            color: var(--text-secondary); border-radius: 0 4px 4px 0;
+            cursor: pointer; transition: color 0.2s;
         }
-        #select-path-btn:hover {
-            color: var(--text-primary);
-        }
+        #select-path-btn:hover { color: var(--text-primary); }
 
         .action-container { width: 250px; flex-shrink: 0; }
+
+        /* --- THAY ĐỔI: Thêm style cho phần thông tin game --- */
+        .game-meta-info {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            height: 1.2em; /* Dành không gian sẵn để tránh giật layout */
+        }
+        .game-meta-info .separator {
+            margin: 0 8px;
+            opacity: 0.5;
+        }
+
         .action-btn {
             width: 100%; padding: 15px 0; font-size: 1.2rem;
             font-weight: 700; border: none; border-radius: 5px;
@@ -159,40 +158,43 @@
 </head>
 <body>
 <div class="main-layout">
-    <aside class="left-sidebar">
+    <main class="main-content"></main>
+
+    <aside class="right-sidebar">
+        <div id="social-links-container"></div>
+    </aside>
+
+    <aside class="patch-notes-box">
         <h2>Thông Báo Cập Nhật</h2>
         <div id="patch-notes-content"></div>
     </aside>
 
-    <!-- Main content giờ chỉ là nơi chứa lớp phủ gradient -->
-    <main class="main-content"></main>
-
-    <aside class="right-sidebar">
-        <h2>Cộng Đồng</h2>
-        <div id="social-links-container"></div>
-    </aside>
-</div>
-
-<!-- Thanh dưới cùng nằm ngoài luồng layout chính -->
-<div class="bottom-bar">
-    <div class="path-selector">
-        <input type="text" id="install-path" placeholder="Chọn thư mục cài đặt..." readonly>
-        <button id="select-path-btn" title="Chọn thư mục cài đặt">
-            <i class="fa-solid fa-folder-open"></i>
-        </button>
-    </div>
-    <div class="action-container" id="action-container">
-        <button id="action-btn" class="action-btn" disabled>Chờ...</button>
-        <div class="progress-container">
-            <div class="progress-bar"><div id="progress-bar-inner" class="progress-bar-inner"></div></div>
-            <div id="status-text" class="status-text"></div>
+    <div class="bottom-bar">
+        <div class="path-selector">
+            <input type="text" id="install-path" placeholder="Chọn thư mục cài đặt..." readonly>
+            <button id="select-path-btn" title="Chọn thư mục cài đặt">
+                <i class="fa-solid fa-folder-open"></i>
+            </button>
+        </div>
+        <div class="action-container" id="action-container">
+            <!-- THAY ĐỔI: Thêm khối HTML cho thông tin game -->
+            <div class="game-meta-info">
+                <span id="game-version"></span>
+                <span class="separator" style="display: none;">|</span>
+                <span id="game-size"></span>
+            </div>
+            <button id="action-btn" class="action-btn" disabled>Chờ...</button>
+            <div class="progress-container">
+                <div class="progress-bar"><div id="progress-bar-inner" class="progress-bar-inner"></div></div>
+                <div id="status-text" class="status-text"></div>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- JavaScript không có thay đổi về logic -->
 <script>
     document.addEventListener('DOMContentLoaded', async () => {
-        // THAY ĐỔI: Loại bỏ các biến và logic liên quan đến game title
         const body = document.body;
         const installPathInput = document.getElementById('install-path');
         const selectPathBtn = document.getElementById('select-path-btn');
@@ -203,6 +205,9 @@
         const progressContainer = actionContainer.querySelector('.progress-container');
         const progressBarInner = document.getElementById('progress-bar-inner');
         const statusText = document.getElementById('status-text');
+        const gameVersionSpan = document.getElementById('game-version');
+        const gameSizeSpan = document.getElementById('game-size');
+        const metaSeparator = document.querySelector('.game-meta-info .separator');
 
         let installPath;
         let gameData;
@@ -241,9 +246,19 @@
             }
 
             gameData = games[0];
-
-            // THAY ĐỔI: Loại bỏ dòng cập nhật text cho game title
             body.style.backgroundImage = `url('${gameData.backgroundUrl}')`;
+
+            // THAY ĐỔI: Cập nhật text cho phiên bản và dung lượng
+            if (gameData.version) {
+                gameVersionSpan.textContent = `Phiên bản ${gameData.version}`;
+            }
+            if (gameData.size) {
+                gameSizeSpan.textContent = gameData.size;
+            }
+            // Hiển thị dấu ngăn cách nếu có cả 2 thông tin
+            if(gameData.version && gameData.size) {
+                metaSeparator.style.display = 'inline';
+            }
 
             patchNotesContent.innerHTML = gameData.patchNotes.map(pn => `
                     <div class="patch-note">
@@ -267,7 +282,6 @@
             updateActionButton(status, gameData.version);
         }
 
-        // Toàn bộ các event listener và hàm khởi tạo giữ nguyên
         selectPathBtn.addEventListener('click', async () => {
             const selectedPath = await window.electronAPI.selectDirectory();
             if (selectedPath) {
