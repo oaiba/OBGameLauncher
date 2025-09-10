@@ -1,0 +1,19 @@
+{
+  "name": "my-game-launcher",
+  "version": "1.0.0",
+  "description": "Một Game Launcher đơn giản",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^25.9.8"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0",
+    "extract-zip": "^2.0.1",
+    "node-fetch": "^2.7.0"
+  }
+}
