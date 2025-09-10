@@ -7,7 +7,7 @@ const Store = require('electron-store');
 const { pipeline } = require('stream/promises');
 
 // URL tới file config game của bạn
-const GAME_CONFIG_URL = 'https://link-toi-file-games.json-cua-ban';
+const GAME_CONFIG_URL = 'https://raw.githubusercontent.com/oaiba/OBGameLauncher/9283031026a45feaeca3fbdc0dc5b404a42fcd20/games.json';
 
 const store = new Store();
 
