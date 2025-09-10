@@ -27,6 +27,12 @@ function createWindow() {
     mainWindow.setMenu(null);
     mainWindow.loadFile('index.html');
     // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        // Sử dụng module shell để mở URL trong trình duyệt mặc định của người dùng
+        shell.openExternal(url);
+        // Ngăn Electron tạo ra một cửa sổ BrowserWindow mới
+        return { action: 'deny' };
+    });
 }
 
 app.whenReady().then(() => {
