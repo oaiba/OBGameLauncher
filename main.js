@@ -7,7 +7,7 @@ const Store = require('electron-store');
 const { pipeline } = require('stream/promises');
 
 // URL tới file config game của bạn
-const GAME_CONFIG_URL = 'https://raw.githubusercontent.com/oaiba/OBGameLauncher/9283031026a45feaeca3fbdc0dc5b404a42fcd20/games.json';
+const GAME_CONFIG_URL = 'http://localhost:3000/games';
 
 const store = new Store();
 
@@ -49,31 +49,17 @@ app.on('window-all-closed', () => {
 // === IPC Handlers ===
 
 // // Lấy config game từ URL
-// ipcMain.handle('fetch-game-config', async () => {
-//     try {
-//         const response = await fetch(GAME_CONFIG_URL);
-//         if (!response.ok) throw new Error(`Failed to fetch config: ${response.statusText}`);
-//         return await response.json();
-//     } catch (error) {
-//         console.error('Error fetching game config:', error);
-//         return null;
-//     }
-// });
-
 ipcMain.handle('fetch-game-config', async () => {
-    try {
-        // __dirname trỏ đến thư mục hiện tại của file main.js
-        const configPath = path.join(__dirname, 'games.json');
-        // Đọc file một cách bất đồng bộ
-        const fileContent = await fs.readFile(configPath, 'utf-8');
-        // Phân tích chuỗi JSON thành object JavaScript và trả về
-        return JSON.parse(fileContent);
-    } catch (error) {
-        console.error('Error reading local game config file:', error);
-        // Trả về null nếu có lỗi (file không tồn tại, JSON không hợp lệ,...)
-        return null;
-    }
-});
+     try {
+         const response = await fetch(GAME_CONFIG_URL);
+         if (!response.ok) throw new Error(`Failed to fetch config: ${response.statusText}`);
+         return await response.json();
+     } catch (error) {
+         console.error('Error fetching game config:', error);
+         return null;
+     }
+ });
+
 
 // Mở dialog để người dùng chọn thư mục cài đặt
 ipcMain.handle('dialog:select-directory', async () => {
